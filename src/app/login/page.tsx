@@ -18,6 +18,11 @@ export default function LoginPage() {
     setError(null);
 
     const supabase = createBrowserClient();
+    if (!supabase) {
+      setError("Supabase is not configured. Add env vars to .env.local.");
+      setLoading(false);
+      return;
+    }
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {

@@ -8,7 +8,9 @@ export async function GET(request: NextRequest) {
 
   if (token_hash && type) {
     const supabase = createServerClient();
-    await supabase.auth.verifyOtp({ token_hash, type: type as "email" });
+    if (supabase) {
+      await supabase.auth.verifyOtp({ token_hash, type: type as "email" });
+    }
   }
 
   return NextResponse.redirect(new URL("/", request.url));

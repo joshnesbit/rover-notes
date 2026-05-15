@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = createServerClient();
+  if (!supabase) return Response.json({ people: [], gifts: [], notes: [] });
   const tsQuery = q.split(/\s+/).join(" & ");
 
   // Search people

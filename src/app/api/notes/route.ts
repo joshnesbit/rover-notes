@@ -13,6 +13,7 @@ export async function POST(request: NextRequest) {
   }
 
   const supabase = createServerClient();
+  if (!supabase) return Response.json({ error: "Not configured" }, { status: 503 });
   const now = new Date().toISOString();
 
   for (const person of structured.people) {
@@ -120,6 +121,7 @@ export async function DELETE(request: NextRequest) {
   }
 
   const supabase = createServerClient();
+  if (!supabase) return Response.json({ error: "Not configured" }, { status: 503 });
   await supabase.from("notes").delete().eq("id", noteId);
 
   return Response.json({ ok: true });

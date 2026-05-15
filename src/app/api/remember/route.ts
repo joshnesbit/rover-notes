@@ -12,6 +12,7 @@ export async function POST(request: Request) {
   }
 
   const supabase = createServerClient();
+  if (!supabase) return Response.json({ error: "Not configured" }, { status: 503 });
 
   // Get person details
   const { data: person } = await supabase

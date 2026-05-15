@@ -3,14 +3,16 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { BookOpen, Plus, Search, Users } from "lucide-react";
+import { BookOpen, Plus, Search, Users, LogIn, LogOut } from "lucide-react";
 import { PersonRow } from "@/components/person-row";
+import { useAuth } from "@/components/auth-provider";
 import type { Person } from "@/lib/database.types";
 
 type SortMode = "recent" | "unseen" | "alpha";
 
 export default function Home() {
   const router = useRouter();
+  const { user, loading: authLoading, configured, signOut } = useAuth();
   const [people, setPeople] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState<SortMode>("recent");
@@ -31,6 +33,45 @@ export default function Home() {
     fetchPeople();
   }, [fetchPeople]);
 
+  // Show login gate if not authenticated (skip gate if Supabase isn't configured yet)
+  if (!authLoading && !user && configured) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-full px-8">
+        <div className="w-full max-w-sm text-center">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <BookOpen className="w-8 h-8 text-terracotta" strokeWidth={2} />
+            <h1 className="font-serif text-3xl font-semibold text-ink">
+              Rover Notes
+            </h1>
+          </div>
+
+          <p className="text-ink-faint text-sm mb-8 leading-relaxed">
+            A personal notebook for tracking the gifts, dreams, and passions of
+            your neighbors.
+          </p>
+
+          <button
+            onClick={() => router.push("/login")}
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-terracotta text-cream font-medium shadow-[0_2px_8px_rgba(196,105,74,0.3)] active:translate-y-[1px] transition-all"
+          >
+            <LogIn className="w-5 h-5" strokeWidth={2.5} />
+            Sign in
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-full">
+        <p className="text-ink-faint font-hand text-lg animate-pulse">
+          opening the notebook...
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col min-h-full">
       {/* Header */}
@@ -40,12 +81,21 @@ export default function Home() {
             <BookOpen className="w-6 h-6 text-terracotta" strokeWidth={2.5} />
             Rover Notes
           </h1>
-          <Link
-            href="/search"
-            className="p-2 -m-2 text-ink-faint hover:text-ink transition-colors"
-          >
-            <Search className="w-5 h-5" strokeWidth={2.5} />
-          </Link>
+          <div className="flex items-center gap-1">
+            <Link
+              href="/search"
+              className="p-2 text-ink-faint hover:text-ink transition-colors"
+            >
+              <Search className="w-5 h-5" strokeWidth={2.5} />
+            </Link>
+            <button
+              onClick={signOut}
+              className="p-2 text-ink-faint hover:text-ink transition-colors"
+              title="Sign out"
+            >
+              <LogOut className="w-5 h-5" strokeWidth={2.5} />
+            </button>
+          </div>
         </div>
       </header>
 

@@ -3,6 +3,8 @@ import { createServerClient } from "@/lib/supabase-server";
 
 export async function GET(request: NextRequest) {
   const supabase = createServerClient();
+  if (!supabase) return Response.json([]);
+
   const sort = request.nextUrl.searchParams.get("sort") || "recent";
 
   let query = supabase.from("people").select("*");
