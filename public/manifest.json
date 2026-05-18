@@ -1,6 +1,6 @@
 {
-  "name": "Rover Notes",
-  "short_name": "Rover",
+  "name": "Neighborhood Gift Bank",
+  "short_name": "Gift Bank",
   "description": "A personal notebook for tracking the gifts, dreams, and passions of your neighbors.",
   "start_url": "/",
   "display": "standalone",

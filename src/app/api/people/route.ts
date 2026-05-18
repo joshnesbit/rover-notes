@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
       case "recent":
         sorted.sort((a, b) => new Date(b.last_seen_at || 0).getTime() - new Date(a.last_seen_at || 0).getTime());
         break;
-      case "unseen":
+      case "past":
         sorted.sort((a, b) => new Date(a.last_seen_at || 0).getTime() - new Date(b.last_seen_at || 0).getTime());
         break;
       case "alpha":
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
     case "recent":
       query = query.order("last_seen_at", { ascending: false, nullsFirst: false });
       break;
-    case "unseen":
+    case "past":
       query = query.order("last_seen_at", { ascending: true, nullsFirst: true });
       break;
     case "alpha":

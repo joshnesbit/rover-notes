@@ -17,13 +17,13 @@ const fraunces = Fraunces({
 
 
 export const metadata: Metadata = {
-  title: "Rover Notes",
+  title: "Neighborhood Gift Bank",
   description: "A personal notebook for tracking the gifts, dreams, and passions of your neighbors.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Rover Notes",
+    title: "Gift Bank",
   },
 };
 

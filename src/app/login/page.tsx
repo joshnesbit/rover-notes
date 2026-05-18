@@ -44,9 +44,14 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="flex items-center justify-center gap-3 mb-8">
           <BookOpen className="w-8 h-8 text-terracotta" strokeWidth={2} />
-          <h1 className="font-serif text-3xl font-semibold text-ink">
-            Rover Notes
-          </h1>
+          <div>
+            <h1 className="font-serif text-2xl font-semibold text-ink">
+              Outer Sunset
+            </h1>
+            <p className="font-serif text-lg text-ink-light">
+              Neighborhood Gift Bank
+            </p>
+          </div>
         </div>
 
         <p className="text-center text-ink-faint text-sm mb-8 leading-relaxed">

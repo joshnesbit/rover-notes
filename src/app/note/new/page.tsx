@@ -1,21 +1,57 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, Mic, Save, Loader2, Check, Pencil, X } from "lucide-react";
+import { useState, useRef, useEffect, useMemo, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ArrowLeft, Mic, Save, Loader2, Check, Pencil, X, Link2, MessageSquarePlus } from "lucide-react";
 import { GiftChip } from "@/components/gift-chip";
 import type { NoteStructured, GiftKind } from "@/lib/database.types";
 
 type Stage = "capture" | "thinking" | "confirm";
 
 export default function NewNotePage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-full"><p className="text-ink-faint animate-pulse">loading...</p></div>}>
+      <NewNoteContent />
+    </Suspense>
+  );
+}
+
+function NewNoteContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const noteType = searchParams.get("type");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [text, setText] = useState("");
   const [stage, setStage] = useState<Stage>("capture");
   const [parsed, setParsed] = useState<NoteStructured | null>(null);
   const [noteId, setNoteId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+
+  const typeConfig = useMemo(() => {
+    switch (noteType) {
+      case "about":
+        return {
+          title: "about someone",
+          placeholder: "I talked to Marcus today and learned he used to be a jazz drummer...",
+          icon: <MessageSquarePlus className="w-4 h-4 text-terracotta" strokeWidth={2.5} />,
+          hint: "who did you talk to? what did you learn about them?",
+        };
+      case "connection":
+        return {
+          title: "a connection",
+          placeholder: "I think Lila and Marcus should meet — she's looking for music for her garden party and he plays drums...",
+          icon: <Link2 className="w-4 h-4 text-ink-light" strokeWidth={2.5} />,
+          hint: "who should meet? what's the connection?",
+        };
+      default:
+        return {
+          title: "new note",
+          placeholder: "I ran into Marcus today at the corner store...",
+          icon: null,
+          hint: "tap the mic on your keyboard to talk",
+        };
+    }
+  }, [noteType]);
 
   useEffect(() => {
     if (stage === "capture" && textareaRef.current) {
@@ -172,20 +208,23 @@ export default function NewNotePage() {
         >
           <ArrowLeft className="w-5 h-5" strokeWidth={2.5} />
         </button>
-        <h1 className="font-serif text-xl text-ink">new note</h1>
+        <h1 className="font-serif text-xl text-ink flex items-center gap-2">
+          {typeConfig.icon}
+          {typeConfig.title}
+        </h1>
       </header>
 
       <div className="flex-1 px-5 py-3 flex flex-col">
         <div className="flex items-center gap-2 mb-3 text-ink-faint">
           <Mic className="w-4 h-4" strokeWidth={2.5} />
-          <span className="font-hand text-base">tap the mic on your keyboard to talk</span>
+          <span className="font-hand text-base">{typeConfig.hint}</span>
         </div>
 
         <textarea
           ref={textareaRef}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="I ran into Marcus today at the corner store..."
+          placeholder={typeConfig.placeholder}
           className="flex-1 w-full bg-cream rounded-2xl p-5 text-ink text-base leading-relaxed resize-none placeholder:text-ink-faint/50 shadow-inner min-h-[200px] border border-ink/5"
         />
       </div>
